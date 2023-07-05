@@ -1,22 +1,24 @@
-'use strict';
+module.exports = (sequelize: any, DataTypes: any) => {
+    const Tag = sequelize.define('Tag', {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+            allowNull: false,
+        },
+        name: {
+            type: DataTypes.STRING(45),
+            allowNull: false,
+        },
+        color: {
+            type: DataTypes.STRING(45),
+            allowNull: false,
+        },
+    });
 
-import { sequelize } from '../config/connection';
+    Tag.associate = (models: any) => {
+        Tag.belongsToMany(models.Todo, { through: 'TodoTag', as: 'todos', foreignKey: 'tag_id' });
+    }
 
-const Sequelize = require('sequelize');
-
-export const Tag = sequelize.define('Tag', {
-    id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
-    },
-    name: {
-        type: Sequelize.STRING(45),
-        allowNull: false
-    },
-    color: {
-        type: Sequelize.STRING(45),
-        allowNull: false
-    },
-});
+    return Tag;
+}

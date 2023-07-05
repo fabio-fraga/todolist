@@ -1,8 +1,21 @@
 import { Request, Response } from 'express';
-import { Tag } from '../database/models/tag-model';
+
+const { Tag, Todo } = require('../database/models');
 
 export const getTagList: any = async (req: Request, res: Response) => {
-    const tags: any = await Tag.findAll();
+    const tags: any = await Tag.findAll(
+        {
+            include: [
+                {
+                    model: Todo,
+                    as: 'todos',
+                    through: {
+                        attributes: []
+                    }
+                }
+            ]
+        }
+    );
 
     if (tags.length === 0) {
         return res.status(404).json({ error: 'Tags not found!' });
@@ -40,7 +53,7 @@ export const updateTag: any = async (req: Request, res: Response) => {
 
     await tag.save();
 
-    return res.status(204).json({ success: 'Tag updated successfully!', UpdatedData: tag });
+    return res.status(200).json({ success: 'Tag updated successfully!', UpdatedData: tag });
 }
 
 export const deleteTag: any = async (req: Request, res: Response) => {
@@ -52,5 +65,5 @@ export const deleteTag: any = async (req: Request, res: Response) => {
 
     await tag.destroy();
 
-    return res.status(204).json({ success: 'Tag deleted successfully!', deletedData: tag });
+    return res.status(200).json({ success: 'Tag deleted successfully!', deletedData: tag });
 }
