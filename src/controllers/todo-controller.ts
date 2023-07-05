@@ -72,3 +72,28 @@ export const deleteTodo = async (req: Request, res: Response) => {
 
     return res.status(200).json({ message: 'Todo deleted successfully!', data: todo })
 }
+
+export const filterByTags = async (req: Request, res: Response) => {
+    const tags = req.params.tags.split('&');
+  
+    const todos = await Todo.findAll({
+        include: [
+            {
+                model: Tag,
+                as: 'tags',
+                through: {
+                    attributes: []
+                },
+                where: {
+                    id: tags
+                }
+            }
+        ]
+      });
+
+    if (todos.length === 0) {
+        return res.status(404).json({ error: 'Todos not found!' });
+    }
+    
+    return res.status(200).json(todos);   
+}
