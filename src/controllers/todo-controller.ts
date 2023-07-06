@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { Op } from 'sequelize';
 
 const { Todo, Tag } = require('../database/models');
 
@@ -76,7 +77,7 @@ export const deleteTodo = async (req: Request, res: Response) => {
 export const filterByTags = async (req: Request, res: Response) => {
     const tags = req.params.tags.split('&');
   
-    const todos = await Todo.findAll({
+    const todos: any = await Todo.findAll({
         include: [
             {
                 model: Tag,
@@ -85,15 +86,23 @@ export const filterByTags = async (req: Request, res: Response) => {
                     attributes: []
                 },
                 where: {
-                    id: tags
+                    id: {
+                        [Op.in]: tags
+                    }
                 }
             }
-        ]
-      });
+        ],
+    });
 
-    if (todos.length === 0) {
+    const todosFiltered: any = todos.filter((
+        todo: any) => { 
+            return todo.tags.length === tags.length 
+        }
+    );
+
+    if (todosFiltered.length === 0) {
         return res.status(404).json({ error: 'Todos not found!' });
     }
     
-    return res.status(200).json(todos);   
+    return res.status(200).json(todosFiltered);   
 }
