@@ -13,7 +13,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
         status: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: 'pendente',
+            defaultValue: 0,
         },
         description: {
             type: DataTypes.STRING(200),

@@ -3,7 +3,8 @@ import {
     getTodoList,
     createTodo,
     updateTodo,
-    deleteTodo
+    deleteTodo,
+    filterByTags
 } from './controllers/todo-controller'
 import {
     getTagList,
@@ -26,5 +27,7 @@ router.get('/tags', getTagList)
 router.post('/tag', createTag)
 router.put('/tag/:id', updateTag)
 router.delete('/tag/:id', deleteTag)
+
+router.get('/todos/filters-by-tags/:tags', filterByTags)
 
 export { router }
